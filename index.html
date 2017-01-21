@@ -1,0 +1,38 @@
+<!DOCTYPE HTML>
+<html>
+    <head>
+        <title>Rise of the Seven Star Fist Warrior</title>
+        <meta charset="UTF-8">
+        <link rel="stylesheet" type="text/css" media="screen" href="index.css">
+    </head>
+    <body>
+        <script type="text/javascript" src="js/utils/logger.js"></script>
+        <script type="text/javascript" src="js/utils/assetLoader.js"></script>
+        <script type="text/javascript" src="js/conf/init.js"></script>
+        <script type="text/javascript" src="js/conf/config.js"></script>
+        <script type="text/javascript" src="js/game.js"></script>
+        <script type="text/javascript" src="js/entities/hero.js"></script>
+        <script type="text/javascript" src="js/entities/monster.js"></script>
+        <script type="text/javascript" src="js/screens/playscreen.js"></script>
+        <script type="text/javascript" src="js/entities/player.js"></script>
+
+        <script type="text/javascript">
+            var then = Date.now();
+
+            var run = function() {
+                var now = Date.now();
+                var delta = now - then;
+                var modifier = delta / 1000;
+
+                GAME.update(modifier);
+                then = now;
+                // Request to do this again ASAP
+                requestAnimationFrame(run);
+            };
+
+            init();
+            run();
+            
+        </script>
+    </body>
+</html>
