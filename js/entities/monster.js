@@ -11,7 +11,7 @@ function Monster() {
     this.origin = null;
 
     this.pv = 1;
-    this.isDead = true;
+    this.isDead = false;
     this.colide = false;
 
     this.init();
@@ -30,7 +30,7 @@ Monster.prototype.update = function update(modifier) {
         this.image = ASSET_LOADER.getImage("monster");
     }
 
-    if (!this.isVisible || this.pv < 1) {
+    if (this.pv < 1) {
         this.die();
     }
 
@@ -58,10 +58,10 @@ Monster.prototype.move = function(modifier) {
 };
 
 Monster.prototype.checkCollisions = function() {
-    if (this.colide === false && GAME.hero.x <= (this.x + 32)
-        && this.x <= (GAME.hero.x + 32)
-        && GAME.hero.y <= (this.y + 32)
-        && this.y <= (GAME.hero.y + 32)) {
+    if (this.colide === false && GAME.hero.x <= (this.x + this.width)
+        && this.x <= (GAME.hero.x + GAME.hero.width)
+        && GAME.hero.y <= (this.y + this.height)
+        && this.y <= (GAME.hero.y + GAME.hero.height)) {
 
         this.collide = true;
         GAME.hero.pv--;

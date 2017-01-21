@@ -69,7 +69,9 @@ Game.prototype.renderScore = function renderScore() {
 Game.prototype.updateMonsters = function updateMonsters(modifier){
 
     var collisionDetected =false;
+    var killDetected = false;
     var monsterCollidingIndex = null;
+    var monsterKilledIndex = null;
 
     for(var i=0; i < this.monsters.length; i++){
         this.monsters[i].update(modifier);
@@ -78,11 +80,22 @@ Game.prototype.updateMonsters = function updateMonsters(modifier){
             collisionDetected=true;
             monsterCollidingIndex = i;
         }
+
+        if(this.monsters[i].isDead){
+            killDetected = true;
+            monsterKilledIndex = i;
+        }
     }
 
     if(collisionDetected){
         this.collidedMonsters++;
         this.monsters.splice(monsterCollidingIndex, 1);
+    }
+
+    if(killDetected){
+        this.collidedMonsters++;
+        this.monsters.splice(monsterKilledIndex, 1);
+        this.score++;
     }
 };
 

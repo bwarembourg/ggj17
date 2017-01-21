@@ -4,9 +4,14 @@ function Hero() {
     this.y = 0;
     this.pv = HERO_BASE_PV;
     this.collide = false;
+    this.direction = BOTTOM;
 
     this.width = 32;
     this.height = 32;
+
+    this.hitboxMargin = 15;
+    this.widthHitbox = 32;
+    this.heightHitbox = 32;
 
     this.image = null;
     this.init();
@@ -42,21 +47,56 @@ function move(playerHoldingUp, playerHoldingDown, playerHoldingLeft, playerHoldi
 
     if (playerHoldingUp && this.y>0) {
         this.y -= velocity;
+        this.direction = TOP;
     }
     if (playerHoldingDown && this.y<CANVAS_HEIGHT - this.height) {
         this.y += velocity;
+        this.direction = BOTTOM;
     }
     if (playerHoldingLeft && this.x>0) {
         this.x -= velocity;
+        this.direction = LEFT;
     }
     if (playerHoldingRight && this.x<CANVAS_WIDTH - this.width) {
         this.x += velocity;
+        this.direction = RIGHT;
     }
 };
 
 Hero.prototype.attack = 
 function(playerHoldingFire) {
     if (playerHoldingFire) {
-        LOGGER.log("ATTACK !");
+        LOGGER.log("ATTACK ! "+this.direction);
+
+        var xHit = null;
+        var yHit = null
+        switch(this.direction){
+            case TOP:
+                xHit = this.x;
+                yHit = this.y - this.heightHitbox;
+                break;
+            case BOTTOM:
+                xHit = this.x;
+                yHit = this.y + this.height + this.heightHitbox;
+                break;
+            case RIGHT:
+                xHit = this.x + this.width;
+                yHit = this.y;
+                break;
+            case LEFT:
+                xHit = this.x - this.widthHitbox;
+                yHit = this.y;
+                break;
+        }
+        var monsters = GAME.monsters;
+        for(var i=0; i< monsters.length; i++){
+            if( xHit <= (monsters[i].x + monsters[i].width)
+                && monsters[i].x <= (xHit + this.widthHitbox)
+                && yHit <= (monsters[i].y + monsters[i].height)
+                && monsters[i].y <= (yHit + this.heightHitbox) ){
+                GAME.monsters[i].pv--;
+                LOGGER.log("WOO U KILLED MONSTER "+i);
+            }
+        }
     }
 };
