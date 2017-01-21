@@ -11,6 +11,8 @@ function Monster() {
     this.origin = null;
 
     this.pv = 1;
+    this.isDead = true;
+    this.colide = false;
 
     this.init();
 };
@@ -28,6 +30,15 @@ Monster.prototype.update = function update(modifier) {
         this.image = ASSET_LOADER.getImage("monster");
     }
 
+    if (!this.isVisible || this.pv < 1) {
+        this.die();
+    }
+
+    this.checkCollisions();
+    this.move(modifier);
+};
+
+Monster.prototype.move = function(modifier) {
     var velocity = this.speed * modifier;
 
     switch(this.origin){
@@ -44,16 +55,28 @@ Monster.prototype.update = function update(modifier) {
             this.x+=velocity;
             break;
     }
-
 };
 
-Monster.prototype.die = function repop() {
-    this.toRandomPosition(); 
+Monster.prototype.checkCollisions = function() {
+    if (this.colide === false && GAME.hero.x <= (this.x + 32)
+        && this.x <= (GAME.hero.x + 32)
+        && GAME.hero.y <= (this.y + 32)
+        && this.y <= (GAME.hero.y + 32)) {
+
+        this.collide = true;
+        GAME.hero.pv--;
+        this.pv--;
+        LOGGER.log("OMG A COLLISION !");
+    }
 };
+
+Monster.prototype.die = function() {
+    this.isDead = true;
+}
 
 Monster.prototype.defineOrigin = function defineOrigin(){
     this.origin = Math.floor( Math.random() * 4);
-}
+};
 
 Monster.prototype.toRandomPosition = function toRandomPosition() {
     switch(this.origin){
@@ -74,6 +97,7 @@ Monster.prototype.toRandomPosition = function toRandomPosition() {
             this.y = Math.random() * (CANVAS_HEIGHT - this.height);
             
     }
+};
 
 Monster.prototype.isVisible = function isVisible(){
     if( this.origin == BOTTOM && this.y< - this.height){
@@ -89,7 +113,4 @@ Monster.prototype.isVisible = function isVisible(){
         return false;
     }
     return true;
-}
-
-    
 };

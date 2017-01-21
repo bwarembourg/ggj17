@@ -9,6 +9,7 @@ function Game() {
     this.spawnedMonsters = 0;
 
     this.score = 0;
+    this.collidedMonsters = 0;
     this.cooldownMonster=0;
 };
 
@@ -23,8 +24,6 @@ Game.prototype.create = function create() {
 };
 
 Game.prototype.update = function update(modifier) {
-    LOGGER.log("updating the game");
-    //this.checkCollisions();
     this.cooldownMonster++;
     if(this.cooldownMonster>=MONSTER_SPAWN_COOLDOWN && this.spawnedMonsters < MONSTER_PER_WAVE[this.level]){
         this.spawnedMonsters++;
@@ -33,31 +32,20 @@ Game.prototype.update = function update(modifier) {
         this.monsters.push(monster);
     }
 
-    else if( this.spawnedMonsters==MONSTER_PER_WAVE[this.level] && !this.monsters[MONSTER_PER_WAVE[this.level] - 1].isVisible() ){
+    else if( this.spawnedMonsters==MONSTER_PER_WAVE[this.level] && !this.monsters[MONSTER_PER_WAVE[this.level] - this.collidedMonsters - 1].isVisible() ){
         this.spawnedMonsters=0;
+        this.collidedMonsters=0;
         this.level++;
+        this.monsters = [];
     }
 
     this.playScreen.update();
     this.hero.update(
         this.player.holdingUp(), this.player.holdingDown(), 
-        this.player.holdingLeft(), this.player.holdingRight(), modifier);
+        this.player.holdingLeft(), this.player.holdingRight(), this.player.holdingFire(), modifier);
     this.updateMonsters(modifier);
     this.render();
 };
-
-// Game.prototype.checkCollisions = function checkCollisions() {
-//     if (this.hero.x <= (this.monster.x + 32)
-//         && this.monster.x <= (this.hero.x + 32)
-//         && this.hero.y <= (this.monster.y + 32)
-//         && this.monster.y <= (this.hero.y + 32)) {
-
-//         LOGGER.log("OMG A COLLISION !");
-//         this.score++;
-//         this.monster.die();
-//         this.renderScore();
-//     }
-// };
 
 Game.prototype.render = function render() {
     this.renderObject(this.playScreen);
@@ -75,17 +63,31 @@ Game.prototype.renderObject = function renderObject(renderable) {
 Game.prototype.renderScore = function renderScore() {
     CTX.fillStyle = SCORE_FILL_STYLE;
     CTX.font = SCORE_FONT;
-    CTX.fillText("Wave : "+this.level+" - spawnedMonsters : "+this.spawnedMonsters, 32, 32);
+    CTX.fillText("Wave : "+this.level+ " - score : " + this.score + " - pv : " + this.hero.pv + "/" + HERO_BASE_PV, 32, 32);
 };
 
 Game.prototype.updateMonsters = function updateMonsters(modifier){
+
+    var collisionDetected =false;
+    var monsterCollidingIndex = null;
+
     for(var i=0; i < this.monsters.length; i++){
         this.monsters[i].update(modifier);
+
+        if(this.monsters[i].collide){
+            collisionDetected=true;
+            monsterCollidingIndex = i;
+        }
     }
-}
+
+    if(collisionDetected){
+        this.collidedMonsters++;
+        this.monsters.splice(monsterCollidingIndex, 1);
+    }
+};
 
 Game.prototype.renderTable = function renderTable(objectTable){
     for(var i=0; i < objectTable.length; i++){
         this.renderObject(objectTable[i]);
     }
-}
+};

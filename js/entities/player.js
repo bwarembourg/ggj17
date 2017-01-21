@@ -31,4 +31,10 @@ Player.prototype.holdingRight = function holdingRight() {
     return 39 in this.keysDown;
 };
 
+Player.prototype.holdingFire = function holdingFire() {
+    return 32 in this.keysDown;
+};
+
+
+
 
