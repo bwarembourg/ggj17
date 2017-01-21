@@ -11,6 +11,11 @@ function Game() {
     this.score = 0;
     this.collidedMonsters = 0;
     this.cooldownMonster=0;
+
+    this.counterSpriteFrame=0;
+    this.counterFrameBg=0;
+    this.backgroundDirection=LEFT;
+    this.backgroundX = 0;
 };
 
 Game.prototype.create = function create() {
@@ -48,9 +53,9 @@ Game.prototype.update = function update(modifier) {
 };
 
 Game.prototype.render = function render() {
-    this.renderObject(this.playScreen);
+    this.renderBackground(this.playScreen);
     this.renderTable(this.monsters);
-    this.renderObject(this.hero);
+    this.renderAnimation(this.hero, 3);
     this.renderScore();
 };
 
@@ -59,6 +64,49 @@ Game.prototype.renderObject = function renderObject(renderable) {
         CTX.drawImage(renderable.image, renderable.x, renderable.y);
     }
 }; 
+
+Game.prototype.renderAnimation = function renderAnimation(renderable, nbFrame){
+    this.counterSpriteFrame++;
+    
+    if(this.counterSpriteFrame> ANIMATION_SPEED*nbFrame){
+        this.counterSpriteFrame=0;
+    }
+
+    for(var i=0; i<nbFrame; i++){
+        if(this.counterSpriteFrame > ANIMATION_SPEED*i && this.counterSpriteFrame <= ANIMATION_SPEED*(i+1)){
+            if (renderable.image != null) {
+                CTX.drawImage(renderable.image, renderable.width*i, 0, renderable.width, renderable.height, renderable.x, renderable.y, renderable.width, renderable.height);
+            }
+        }        
+    }
+
+}
+
+Game.prototype.renderBackground = function renderBackground(renderable){
+    if(renderable.image != null && renderable.image1 != null && renderable.image2){
+        this.counterFrameBg++;
+
+        if(this.backgroundDirection==LEFT){
+            var direction = -1;
+        }
+        else{
+            var direction = 1;
+        }
+
+        this.backgroundX += direction;
+        if(this.backgroundX<=-300){
+            this.backgroundDirection= RIGHT;
+            this.counterFrameBg=0;
+        }
+        else if(this.backgroundX>0){
+            this.backgroundDirection = LEFT;
+            this.counterFrameBg=0;
+        }
+        CTX.drawImage(renderable.image, renderable.x, renderable.y);
+        CTX.drawImage(renderable.image1, this.backgroundX, renderable.y);
+        CTX.drawImage(renderable.image2, renderable.x, renderable.y);
+    }
+}
 
 Game.prototype.renderScore = function renderScore() {
     CTX.fillStyle = SCORE_FILL_STYLE;

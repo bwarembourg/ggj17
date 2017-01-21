@@ -8,7 +8,11 @@ AssetLoader.prototype.load = function load() {
 
     this._loadImage("monster", "resources/img/monster.png");
     this._loadImage("hero", "resources/img/hero.png");
-    this._loadImage("background", "resources/img/background.png");
+    this._loadImage("biker", "resources/img/biker.png");
+    this._loadImage("dolphin", "resources/img/dolphin.png");
+    this._loadImage("background", "resources/img/background.jpg");
+    this._loadImage("background1", "resources/img/background1.png");
+    this._loadImage("background2", "resources/img/background2.png");
 };
 
 AssetLoader.prototype.getImage = function getImage(name) {

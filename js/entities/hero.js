@@ -6,8 +6,8 @@ function Hero() {
     this.collide = false;
     this.direction = BOTTOM;
 
-    this.width = 32;
-    this.height = 32;
+    this.width = 65;
+    this.height = 46;
 
     this.hitboxMargin = 15;
     this.widthHitbox = 32;
@@ -21,7 +21,7 @@ Hero.prototype.init =
 function init() {
     LOGGER.log("hero creation");
 
-    this.image = ASSET_LOADER.getImage("hero");
+    this.image = ASSET_LOADER.getImage("biker");
     this.x = CANVAS_WIDTH / 2;
     this.y = CANVAS_HEIGHT / 2;
 };
@@ -33,7 +33,7 @@ function update(playerHoldingUp, playerHoldingDown, playerHoldingLeft, playerHol
     }
 
     if (this.image === null) {
-        this.image = ASSET_LOADER.getImage("hero");
+        this.image = ASSET_LOADER.getImage("biker");
     }
 
     this.move(playerHoldingUp, playerHoldingDown, playerHoldingLeft, playerHoldingRight, modifier);
