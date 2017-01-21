@@ -6,6 +6,8 @@ function Hero() {
     this.collide = false;
     this.direction = BOTTOM;
 
+    this.hitting=false;
+
     this.width = 65;
     this.height = 46;
 
@@ -14,6 +16,9 @@ function Hero() {
     this.heightHitbox = 32;
 
     this.image = null;
+    this.imageRight = null;
+    this.imageHit = null;
+    this.imageHitRight = null;
     this.init();
 };
 
@@ -22,6 +27,9 @@ function init() {
     LOGGER.log("hero creation");
 
     this.image = ASSET_LOADER.getImage("biker");
+    this.imageHit = ASSET_LOADER.getImage("biker_hit");
+    this.imageRight = ASSET_LOADER.getImage("biker_right");
+    this.imageHitRight = ASSET_LOADER.getImage("biker_hit_right");
     this.x = CANVAS_WIDTH / 2;
     this.y = CANVAS_HEIGHT / 2;
 };
@@ -30,10 +38,20 @@ Hero.prototype.update =
 function update(playerHoldingUp, playerHoldingDown, playerHoldingLeft, playerHoldingRight, playerHoldingFire, modifier) {
     if (this.pv < 1) {
         LOGGER.log("GAME OVER YO")
+        GAME.gameState = GAME_OVER;
     }
 
     if (this.image === null) {
         this.image = ASSET_LOADER.getImage("biker");
+    }
+    if (this.imageHit === null){
+        this.imageHit = ASSET_LOADER.getImage("biker_hit");
+    }
+    if (this.imageRight === null){
+        this.imageRight = ASSET_LOADER.getImage("biker_right");
+    }
+    if (this.imageHitRight === null){
+        this.imageHitRight = ASSET_LOADER.getImage("biker_hit_right");
     }
 
     this.move(playerHoldingUp, playerHoldingDown, playerHoldingLeft, playerHoldingRight, modifier);
@@ -67,7 +85,9 @@ Hero.prototype.attack =
 function(playerHoldingFire) {
     if (playerHoldingFire) {
         LOGGER.log("ATTACK ! "+this.direction);
-
+        if(this.hitting==false){
+            this.hitting=true;
+        }
         var xHit = null;
         var yHit = null
         switch(this.direction){

@@ -1,6 +1,8 @@
 
 function Monster() {
     this.image = null;
+    this.imageRight = null;
+
     this.x = 0;
     this.y = 0;
     this.speed = MONSTER_BASE_SPEED;
@@ -20,6 +22,8 @@ function Monster() {
 Monster.prototype.init = function init() {
     LOGGER.log("creating monster");
     this.image = ASSET_LOADER.getImage("dolphin");
+    this.imageRight = ASSET_LOADER.getImage("dolphin_right");
+
     this.defineOrigin();
     this.toRandomPosition();
     LOGGER.log("monster x : "+this.x+" y : "+this.y);
@@ -28,6 +32,10 @@ Monster.prototype.init = function init() {
 Monster.prototype.update = function update(modifier) {
     if (this.image === null) {
         this.image = ASSET_LOADER.getImage("dolphin");
+    }
+
+    if (this.imageRight === null){
+        this.imageRight = ASSET_LOADER.getImage("dolphin_right");
     }
 
     if (this.pv < 1) {
