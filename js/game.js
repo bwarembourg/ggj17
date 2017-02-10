@@ -17,7 +17,7 @@ function Game() {
     this.counterFrameBg=0;
     this.backgroundDirection=LEFT;
     this.backgroundX = 0;
-
+ 
     this.gameState = TITLE_SCREEN;
 };
 
